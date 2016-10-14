@@ -1,0 +1,18 @@
+#! /bin/zsh
+#
+# ~/.zshrc
+#
+
+HISTFILE=~/.zsh_history
+HISTSIZE=250
+SAVEHIST=250
+
+unsetopt beep
+
+autoload -Uz compinit promptinit
+compinit
+promptinit
+
+prompt walters
+alias ls='ls --color=auto'
+alias svim='sudo vim'

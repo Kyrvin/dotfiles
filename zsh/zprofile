@@ -1,0 +1,20 @@
+#! /bin/zsh
+#
+# ~/.zprofile
+#
+
+export PATH="$HOME/.local/bin:$PATH"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+
+_user_dirs="$XDG_CONFIG_HOME/user-dirs.dirs"
+if [ -e "$_user_dirs" ]; then
+	source "$_user_dirs"
+	export $(sed -n 's/^\(XDG_[^\s=]*\)=.*/\1/p' "$_user_dirs")
+fi
+unset _user_dirs
+
+export MPD_HOST="$XDG_RUNTIME_DIR/mpd_socket"
+
+[ -z "$DISPLAY" ] && [ "$(fgconsole 2>/dev/null)" -eq 1 ] && exec startx
