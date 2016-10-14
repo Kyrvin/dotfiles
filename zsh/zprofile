@@ -15,6 +15,13 @@ if [ -e "$_user_dirs" ]; then
 fi
 unset _user_dirs
 
+pulseaudio --start
+
+if [ ! -e "$XDG_CACHE_HOME/mpd/pid" ]; then
+	mkdir -p "$XDG_CACHE_HOME/mpd/playlists"
+	mpd
+fi
+
 export MPD_HOST="$XDG_RUNTIME_DIR/mpd_socket"
 
 [ -z "$DISPLAY" ] && [ "$(fgconsole 2>/dev/null)" -eq 1 ] && exec startx
