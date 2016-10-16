@@ -17,7 +17,7 @@ unset _user_dirs
 
 if [ ! -e "$XDG_CACHE_HOME/mpd/pid" ]; then
 	mkdir -p "$XDG_CACHE_HOME/mpd/playlists"
-	mpd
+	mpd &
 fi
 
 export MPD_HOST="$XDG_RUNTIME_DIR/mpd_socket"
