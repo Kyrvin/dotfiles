@@ -15,8 +15,6 @@ if [ -e "$_user_dirs" ]; then
 fi
 unset _user_dirs
 
-pulseaudio --start
-
 if [ ! -e "$XDG_CACHE_HOME/mpd/pid" ]; then
 	mkdir -p "$XDG_CACHE_HOME/mpd/playlists"
 	mpd
