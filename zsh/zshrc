@@ -3,6 +3,8 @@
 # ~/.zshrc
 #
 
+[[ ! -o interactive ]] && return
+
 HISTFILE=~/.zsh_history
 HISTSIZE=250
 SAVEHIST=250
