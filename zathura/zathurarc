@@ -1,0 +1,10 @@
+#
+# zathurarc
+#
+
+include zathurarc-gruvbox-dark
+
+set font "Noto Sans normal 9"
+set statusbar-h-padding 4
+set smooth-scroll true
+set statusbar-home-tilde true
