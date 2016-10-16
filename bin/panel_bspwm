@@ -1,0 +1,55 @@
+#! /bin/bash
+
+if [ ! -e "$HOME/.local/lib/lemonbar.sh" ]; then
+	printf "Unable to source lemonbar.sh\n" >&2
+	exit 1
+fi
+
+source "$HOME/.local/lib/lemonbar.sh"
+
+[ -e "$XDG_CONFIG_HOME/panel/colors" ] && source "$XDG_CONFIG_HOME/panel/colors"
+
+# $1 name
+# $2 fg_color
+# $3 bg_color
+bspwm_desktop() {
+	printf "%s\n" "$(lemonbar_colors "$(lemonbar_click "  $1  " "bspc desktop -f \"$1\" &")" "$2" "$3")"
+}
+
+panel_bspwm_prefix=W
+
+IFS=":"
+
+while read -r line; do
+	set -- ${line#?}
+	wminfo=""
+
+	while [ $# -gt 0 ]; do
+		item="$1"
+		name="${item#?}"
+
+		case $item in
+		[FOU]*)
+			wminfo="${wminfo}$(bspwm_desktop "$name" "$panel_color_fg" "$panel_color_4")"
+			;;
+
+		f*)
+			wminfo="${wminfo}$(bspwm_desktop "$name" "$panel_color_7" "$panel_color_bg")"
+			;;
+
+		u*)
+			wminfo="${wminfo}$(bspwm_desktop "$name" "$panel_color_1" "$panel_color_bg")"
+			;;
+
+		o*)
+			wminfo="${wminfo}$(bspwm_desktop "$name" "$panel_color_fg" "$panel_color_bg")"
+			;;
+
+		esac
+
+		shift
+	done
+
+	printf "${panel_bspwm_prefix}%s\n" "$wminfo"
+
+done < <(bspc subscribe report)

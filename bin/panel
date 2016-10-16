@@ -1,0 +1,110 @@
+#! /bin/bash
+
+if [ $(pgrep -cx panel) -gt 1 ]; then
+	printf "%s\n" "The panel is already running." >&2
+	exit 1
+fi
+
+panel_fifo="${XDG_RUNTIME_DIR:-/tmp}/panel_fifo"
+
+panel_height=20
+panel_width=$(xrandr | grep " primary " | sed 's/.* \([0-9][0-9]*\)x.*/\1/')
+panel_x_offset=0
+panel_y_offset=0
+
+panel_on_bottom=false
+
+panel_font_1="Noto Sans:pixelsize=14:style=bold:antialias=true:autohint=true"
+panel_font_2="Material Icons:pixelsize=18:antialias=true:autohint=true"
+panel_font_3=
+panel_font_4=
+panel_font_5=
+
+panel_click_areas=20
+panel_underline_width=1
+panel_text_offset=0
+
+[ -e "$XDG_CONFIG_HOME/panel/colors" ] && source "$XDG_CONFIG_HOME/panel/colors"
+
+panel_layout() {
+	local battery
+	local bspwm
+	local clock
+	local mpd
+	local network
+	local volume
+
+	while read -r line; do
+		case $line in
+		C*)
+			clock=${line#?}
+			;;
+
+		B*)
+			battery=${line#?}
+			;;
+
+		V*)
+			volume=${line#?}
+			;;
+
+		N*)
+			network=${line#?}
+			;;
+
+		W*)
+			bspwm=${line#?}
+			;;
+
+		M*)
+			mpd=${line#?}
+			;;
+
+		esac
+
+		printf "%s\n" "%{l}${bspwm}%{c}${clock}%{r}${volume}   ${battery}   ${network}   ${mpd}  "
+	done
+}
+
+panel_main() {
+	trap 'trap - TERM; kill 0' INT TERM QUIT EXIT
+
+	local -a lemonbar_opts=(
+		'-g' "${panel_width}x${panel_height}+${panel_x_offset}+${panel_y_offset}"
+		'-a' "$panel_click_areas"
+		'-u' "$panel_underline_width"
+		'-o' "$panel_text_offset"
+		'-F' "${panel_color_fg:-#ffffff}"
+		'-B' "${panel_color_bg:-#000000}"
+		'-U' "${panel_color_fg:-#ffffff}")
+
+	[ "$panel_on_bottom" == "true" ] && lemonbar_opts+=('-b')
+	[ -n "$panel_font_1" ] && lemonbar_opts+=('-f' "$panel_font_1")
+	[ -n "$panel_font_2" ] && lemonbar_opts+=('-f' "$panel_font_2")
+	[ -n "$panel_font_3" ] && lemonbar_opts+=('-f' "$panel_font_3")
+	[ -n "$panel_font_4" ] && lemonbar_opts+=('-f' "$panel_font_4")
+	[ -n "$panel_font_5" ] && lemonbar_opts+=('-f' "$panel_font_5")
+
+	if [ -n "$panel_height" ]; then
+		if [ "$panel_on_bottom" == "true" ]; then
+			bspc config -m primary bottom_padding "$panel_height"
+		else
+			bspc config -m primary top_padding "$panel_height"
+		fi
+	fi
+
+	rm -f "$panel_fifo" && mkfifo "$panel_fifo"
+
+	panel_bspwm   > "$panel_fifo" &
+	panel_battery > "$panel_fifo" &
+	panel_volume  > "$panel_fifo" &
+	panel_network > "$panel_fifo" &
+	panel_clock   > "$panel_fifo" &
+	panel_mpd     > "$panel_fifo" &
+
+	panel_layout < $panel_fifo | lemonbar "${lemonbar_opts[@]}" | sh &
+
+	wait
+}
+
+panel_main

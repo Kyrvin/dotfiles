@@ -1,0 +1,46 @@
+#! /bin/bash
+
+if [ ! -e "$HOME/.local/lib/lemonbar.sh" ]; then
+	printf "Unable to source lemonbar.sh\n" >&2
+	exit 1
+fi
+
+source "$HOME/.local/lib/lemonbar.sh"
+
+[ -e "$XDG_CONFIG_HOME/panel/colors" ] && source "$XDG_CONFIG_HOME/panel/colors"
+
+# TODO : Move prefixes to their own file under $XDG_CONFIG_HOME/panel
+panel_battery_prefix=B
+
+battery_dir=/sys/class/power_supply/BAT0
+
+charging_icon=$'\uE1A3'
+standard_icon=$'\uE1A5'
+alert_icon=$'\uE19C'
+
+charge=
+state=
+icon=
+
+while read -r; do
+	charge=$(cat "$battery_dir/capacity")
+	state=$(cat "$battery_dir/status")
+
+	if [ "$state" == "Charging" ] || [ "$state" == "Full" ]; then
+		icon="$charging_icon"
+		color="$panel_color_fg"
+
+	elif [ $charge -gt 20 ]; then
+		icon="$standard_icon"
+		color="$panel_color_fg"
+
+	else
+		icon="$alert_icon"
+		color="$panel_color_9"
+
+	fi
+
+	printf "${panel_battery_prefix}%s\n" "$(lemonbar_fgcolor "${icon} ${charge}%" "$color")"
+
+# TODO : research an alternative for upower
+done < <(upower --monitor)

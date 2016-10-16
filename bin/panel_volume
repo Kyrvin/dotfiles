@@ -1,0 +1,52 @@
+#! /bin/bash
+
+if [ ! -e "$HOME/.local/lib/lemonbar.sh" ]; then
+	printf "Unable to source lemonbar.sh\n" >&2
+	exit 1
+fi
+
+source "$HOME/.local/lib/lemonbar.sh"
+
+[ -e "$XDG_CONFIG_HOME/panel/colors" ] && source "$XDG_CONFIG_HOME/panel/colors"
+
+panel_volume_prefix=V
+
+off_icon=$'\uE04E'
+low_icon=$'\uE04D'
+high_icon=$'\uE050'
+
+mute_color="$panel_color_7"
+unmute_color="$panel_color_fg"
+
+inc_callback="amixer set Master 5%+ &"
+dec_callback="amixer set Master 5%- &"
+
+# TODO : Generalize this function into lemonbar.sh
+# $1 text to format
+volume_callbacks() {
+	printf "%s\n" "$(lemonbar_click "$(lemonbar_click "$1" "$inc_callback" "5")" "$dec_callback" "4")"
+}
+
+while read -r; do
+	level=$(amixer get Master | sed 's/.* \[\([0-9][0-9]*\).*\] .*/\1/' | tail -1)
+	state=$(amixer get Master | sed 's/.* \[\([a-z][a-z]*\)\]/\1/' | tail -1)
+
+	if [ "$state" == "on" ]; then
+		color="$unmute_color"
+	else
+		color="$mute_color"
+	fi
+
+	if [ "$level" -eq 0 ]; then
+		icon="$off_icon"
+	elif [ "$level" -le 40 ]; then
+		icon="$low_icon"
+	else
+		icon="$high_icon"
+	fi
+
+	output="$(volume_callbacks "$(lemonbar_fgcolor "${icon} ${level}%" "$color")")"
+
+	printf "${panel_volume_prefix}%s\n" "$output"
+
+done < <(echo && stdbuf -oL alsactl monitor pulse)

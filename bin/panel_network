@@ -1,0 +1,31 @@
+#! /bin/bash
+
+if [ ! -e "$HOME/.local/lib/lemonbar.sh" ]; then
+	printf "Unable to source lemonbar.sh\n" >&2
+	exit 1
+fi
+
+source "$HOME/.local/lib/lemonbar.sh"
+
+[ -e "$XDG_CONFIG_HOME/panel/colors" ] && source "$XDG_CONFIG_HOME/panel/colors"
+
+panel_network_prefix=N
+
+icon_off=$'\uE1DA'
+icon_on=$'\uE1BA'
+
+while read -r; do
+	sleep 0.5 # Avoid possible race condition
+
+	name="$(iwgetid | sed -n 's/.*ESSID:"\(.*\)"/\1/p')"
+
+	if [ -n "$name" ]; then
+		# TODO : Trim name to a set number of characters
+		icon="${icon_on} ${name}"
+	else
+		icon="$(lemonbar_fgcolor "${icon_off}" "$panel_color_7")"
+	fi
+
+	printf "${panel_network_prefix}%s\n" "$icon"
+
+done < <(echo && iwevent 2>/dev/null)

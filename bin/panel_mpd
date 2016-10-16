@@ -1,0 +1,50 @@
+#! /bin/bash
+
+if [ ! -e "$HOME/.local/lib/lemonbar.sh" ]; then
+	printf "Unable to source lemonbar.sh\n" >&2
+	exit 1
+fi
+
+source "$HOME/.local/lib/lemonbar.sh"
+
+[ -e "$XDG_CONFIG_HOME/panel/colors" ] && source "$XDG_CONFIG_HOME/panel/colors"
+
+# TODO : Move prefixes to their own file under $XDG_CONFIG_HOME/panel
+panel_mpd_prefix=M
+
+queue_icon="$(printf "\uE03D")"
+queue_callback="st -g 120x36 -e ncmpc &"
+queue_btn="$(lemonbar_click "$queue_icon" "$queue_callback")"
+
+play_icon="$(printf "\uE037")"
+play_callback="mpc play >/dev/null"
+play_btn="$(lemonbar_click "$play_icon" "$play_callback")"
+
+pause_icon="$(printf "\uE034")"
+pause_callback="mpc pause >/dev/null"
+pause_btn="$(lemonbar_click "$pause_icon" "$pause_callback")"
+
+next_icon="$(printf "\uE044")"
+next_callback="mpc next >/dev/null"
+next_btn="$(lemonbar_click "$next_icon" "$next_callback")"
+
+prev_icon="$(printf "\uE045")"
+prev_callback="mpc prev >/dev/null"
+prev_btn="$(lemonbar_click "$prev_icon" "$prev_callback")"
+
+while read -r; do
+	state="$(mpc status | sed -n 's/\[\([[:alpha:]]*\)\].*/\1/p')"
+
+	if [ "$state" == "playing" ]; then
+		line="$queue_btn $prev_btn $pause_btn $next_btn"
+	else
+		line="$queue_btn $prev_btn $play_btn $next_btn"
+	fi
+
+	if [ -z "$state" ]; then
+		printf "${panel_mpd_prefix}%s\n" "$(lemonbar_fgcolor "$line" "$panel_color_8")"
+	else
+		printf "${panel_mpd_prefix}%s\n" "$line"
+	fi
+
+done < <(echo && mpc idleloop)

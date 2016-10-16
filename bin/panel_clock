@@ -1,0 +1,11 @@
+#! /bin/bash
+
+panel_clock_prefix=C
+
+clock_format="%a %b %e, %H:%M"
+clock_interval=1
+
+while true; do
+	date +"${panel_clock_prefix}${clock_format}"
+	sleep $clock_interval
+done
