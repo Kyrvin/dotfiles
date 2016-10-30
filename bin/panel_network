@@ -11,13 +11,14 @@ source "$HOME/.local/lib/lemonbar.sh"
 
 panel_network_prefix=N
 
+interface="wlp7s0"
+
 icon_off=$'\uE1DA'
 icon_on=$'\uE1BA'
 
 while read -r; do
-	sleep 0.5 # Avoid possible race condition
 
-	name="$(iwgetid | sed -n 's/.*ESSID:"\(.*\)"/\1/p')"
+	name=$(iw dev $interface link | sed -n 's/\s*SSID:\s*\([^\s]*\)\s*/\1/p')
 
 	if [ -n "$name" ]; then
 		# TODO : Trim name to a set number of characters
@@ -28,4 +29,4 @@ while read -r; do
 
 	printf "${panel_network_prefix}%s\n" "$icon"
 
-done < <(echo && iwevent 2>/dev/null)
+done < <(echo && iw event 2>/dev/null)
