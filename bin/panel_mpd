@@ -12,24 +12,24 @@ source "$HOME/.local/lib/lemonbar.sh"
 # TODO : Move prefixes to their own file under $XDG_CONFIG_HOME/panel
 panel_mpd_prefix=M
 
-queue_icon="$(printf "\uE03D")"
+queue_icon=$'\uE03D'
 queue_callback="st -g 120x36 -e ncmpc &"
 queue_btn="$(lemonbar_click "$queue_icon" "$queue_callback")"
 
-play_icon="$(printf "\uE037")"
-play_callback="mpc play >/dev/null"
+play_icon=$'\uE037'
+play_callback="mpc play >/dev/null &"
 play_btn="$(lemonbar_click "$play_icon" "$play_callback")"
 
-pause_icon="$(printf "\uE034")"
-pause_callback="mpc pause >/dev/null"
+pause_icon=$'\uE034'
+pause_callback="mpc pause >/dev/null &"
 pause_btn="$(lemonbar_click "$pause_icon" "$pause_callback")"
 
-next_icon="$(printf "\uE044")"
-next_callback="mpc next >/dev/null"
+next_icon=$'\uE044'
+next_callback="mpc next >/dev/null &"
 next_btn="$(lemonbar_click "$next_icon" "$next_callback")"
 
-prev_icon="$(printf "\uE045")"
-prev_callback="mpc prev >/dev/null"
+prev_icon=$'\uE045'
+prev_callback="mpc prev >/dev/null &"
 prev_btn="$(lemonbar_click "$prev_icon" "$prev_callback")"
 
 while read -r; do
