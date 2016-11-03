@@ -1,0 +1,50 @@
+#! /bin/bash
+
+backlight_max=100
+backlight_min=5
+backlight_inc=5
+backlight_time=100
+backlight_steps=20
+
+xbacklight="xbacklight -time $backlight_time -steps $backlight_steps"
+
+case $1 in
+-inc)
+	new=$(( $(printf '%.0f' $($xbacklight -get)) + $backlight_inc ))
+	[ $new -gt $backlight_max ] && new=$backlight_max
+	$xbacklight -set $new
+	;;
+
+-dec)
+	new=$(( $(printf '%.0f' $($xbacklight -get)) - $backlight_inc ))
+	[ $new -lt $backlight_min ] && new=$backlight_min
+	$xbacklight -set $new
+	;;
+
+-set)
+	if [ -z "$2" ] || [[ "$2" =~ ^[^0-9]+$ ]]; then
+		printf 'invalid argument: %s\n' "$2" >&2
+		exit 2
+	fi
+
+	if [ $2 -lt $backlight_min ]; then
+		new=$backlight_min
+	elif [ $2 -gt $backlight_max ]; then
+		new=$backlight_max
+	else
+		new=$2
+	fi
+
+	$xbacklight -set $new
+	;;
+
+-get)
+	printf '%.0f\n' $($xbacklight -get)
+	;;
+
+*)
+	printf 'unknown argument: %s\n' "$1" >&2
+	exit 2
+	;;
+
+esac

@@ -18,10 +18,6 @@ charging_icon=$'\uE1A3'
 standard_icon=$'\uE1A5'
 alert_icon=$'\uE19C'
 
-charge=
-state=
-icon=
-
 while read -r; do
 	charge=$(cat "$battery_dir/capacity")
 	state=$(cat "$battery_dir/status")
@@ -40,7 +36,12 @@ while read -r; do
 
 	fi
 
-	printf "${panel_battery_prefix}%s\n" "$(lemonbar_fgcolor "${icon} ${charge}%" "$color")"
+	icon="${icon} ${charge}%"
+	icon="$(lemonbar_click "$icon" "panel_backlight -dec &" "4")"
+	icon="$(lemonbar_click "$icon" "panel_backlight -inc &" "5")"
+	icon="$(lemonbar_fgcolor "$icon" "$color")"
+
+	printf "${panel_battery_prefix}%s\n" "$icon"
 
 # TODO : research an alternative for upower
 done < <(upower --monitor)
