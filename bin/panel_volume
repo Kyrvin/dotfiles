@@ -20,12 +20,7 @@ unmute_color="$panel_color_fg"
 
 inc_callback="amixer set Master 5%+ &"
 dec_callback="amixer set Master 5%- &"
-
-# TODO : Generalize this function into lemonbar.sh
-# $1 text to format
-volume_callbacks() {
-	printf "%s\n" "$(lemonbar_click "$(lemonbar_click "$1" "$inc_callback" "5")" "$dec_callback" "4")"
-}
+mute_callback="amixer set Master toggle &"
 
 while read -r; do
 	level=$(amixer get Master | sed 's/.* \[\([0-9][0-9]*\).*\] .*/\1/' | tail -1)
@@ -45,7 +40,11 @@ while read -r; do
 		icon="$high_icon"
 	fi
 
-	output="$(volume_callbacks "$(lemonbar_fgcolor "${icon} ${level}%" "$color")")"
+	output="${icon} ${level}%"
+	output="$(lemonbar_click "$output" "$mute_callback" "3")"
+	output="$(lemonbar_click "$output" "$dec_callback" "4")"
+	output="$(lemonbar_click "$output" "$inc_callback" "5")"
+	output="$(lemonbar_fgcolor "$output" "$color")"
 
 	printf "${panel_volume_prefix}%s\n" "$output"
 
