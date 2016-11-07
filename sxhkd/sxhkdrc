@@ -1,0 +1,89 @@
+# Navigation
+super + {_,shift} + {h,j,k,l}
+	bspc node {-f,-s} {west,south,north,east}
+
+super + {_,shift} + {1-9,0,minus,equal}
+	bspc {desktop -f,node -d} {1-9,0,prev,next}
+
+super + {_,shift} + {comma,period}
+	bspc {monitor -f,node -m} {prev,next}
+
+# Monocle
+super + m
+	bspc desktop -l next
+
+# Node Flags
+super + {y,p,i}
+	bspc node focused -g {sticky,private,locked}
+
+# Node State
+super + {t,g,f,u}
+	bspc node focused -t '~{tiled,pseudo_tiled,floating,fullscreen}'
+
+
+# Presel
+super + ctrl + {h,j,k,l,space}
+	bspc node -p '{~west,~south,~north,~east,cancel}'
+
+# Presel Ratio
+super + ctrl + {1-9}
+	bspc node -o 0.{1-9}
+
+
+# Volume
+XF86Audio{LowerVolume,RaiseVolume,Mute}
+	amixer set Master {5%-,5%+,toggle}
+
+# Brightness
+XF86MonBrightness{Up,Down}
+	panel_backlight {-inc,-dec}
+
+# Mpd
+XF86Audio{Play,Next,Prev}
+	mpc {toggle,next,prev}
+
+# Reload sxhkd
+super + ctrl + r
+	pkill -USR1 -x sxhkd
+
+# Lock screen
+super + Escape
+	xautolock -locknow
+
+# Logout
+super + ctrl + Escape
+	bspc quit
+
+# Close/Kill window
+super + {c,x}
+	bspc node focused {-c,-x}
+
+#
+# Launchers
+#
+super + shift + Return
+	st
+
+super + shift + e
+	thunar
+
+super + shift + w
+	chromium
+
+super + shift + s
+	st -e top
+
+super + shift + v
+	st -e vim
+
+super + shift + t
+	st -g 120x36 -e ncmpc
+
+super + shift + o
+	libreoffice
+
+super + shift + i
+	hexchat
+
+super + shift + z
+	zathura
