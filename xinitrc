@@ -13,6 +13,7 @@ xsetroot -cursor_name left_ptr &
 feh --no-fehbg --bg-fill "$wallpaper" &
 thunar --daemon &
 xautolock -time 5 -locker "$locker" -detectsleep &
+dunst &
 sxhkd &
 compton -b &
 panel &
