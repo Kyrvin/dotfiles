@@ -5,6 +5,8 @@
 
 [[ ! -o interactive ]] && return
 
+[ "$_HAVE_ZPROFILE" != "true" ] && [ -e "$HOME/.zprofile" ] && source "$HOME/.zprofile"
+
 HISTFILE=~/.zsh_history
 HISTSIZE=250
 SAVEHIST=250
@@ -18,3 +20,5 @@ promptinit
 prompt walters
 alias ls='ls --color=auto'
 alias svim='sudo vim'
+
+unset _HAVE_ZPROFILE

@@ -3,6 +3,8 @@
 # ~/.zprofile
 #
 
+[[ -o interactive ]] && export _HAVE_ZPROFILE=true
+
 export PATH="$HOME/.local/bin:$PATH"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CONFIG_HOME="$HOME/.config"
