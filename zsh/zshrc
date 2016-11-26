@@ -20,5 +20,6 @@ promptinit
 prompt walters
 alias ls='ls --color=auto'
 alias svim='sudo vim'
+alias ncmpc='ncmpc --host=$MPD_HOST'
 
 unset _HAVE_ZPROFILE
