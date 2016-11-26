@@ -1,0 +1,36 @@
+runtime bundle/vim-pathogen/autoload/pathogen.vim
+
+execute pathogen#infect()
+
+set background=dark
+let g:gruvbox_italics=1
+colorscheme gruvbox
+
+let &colorcolumn=join(range(81,999),",")
+
+syntax on
+set smartindent
+set showcmd
+set number
+set numberwidth=1
+set ruler
+set laststatus=2
+
+autocmd FileType c,cpp setlocal tabstop=8 noexpandtab shiftwidth=8 softtabstop=8
+autocmd FileType python setlocal tabstop=4 expandtab shiftwidth=4 softtabstop=4
+
+map <F1> <Esc>
+imap <F1> <Esc>
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
+
+" NERDTree
+map <C-n> :NERDTreeToggle<CR>
+
+" Close vim if NERDTree is the only thing left
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+" Tagbar
+autocmd FileType c,cpp :TagbarOpen
