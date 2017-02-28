@@ -13,3 +13,18 @@
 [submodule "vim/bundle/vim-pathogen"]
 	path = vim/bundle/vim-pathogen
 	url = https://github.com/tpope/vim-pathogen.git
+[submodule "pacman/pkgbuilds/ld-lsb"]
+	path = pacman/pkgbuilds/ld-lsb
+	url = aur://ld-lsb
+[submodule "pacman/pkgbuilds/lemonbar-xft-git"]
+	path = pacman/pkgbuilds/lemonbar-xft-git
+	url = aur://lemonbar-xft-git
+[submodule "pacman/pkgbuilds/paper-icon-theme"]
+	path = pacman/pkgbuilds/paper-icon-theme
+	url = aur://paper-icon-theme
+[submodule "pacman/pkgbuilds/ttf-ms-fonts"]
+	path = pacman/pkgbuilds/ttf-ms-fonts
+	url = aur://ttf-ms-fonts
+[submodule "pacman/pkgbuilds/ttf-material-design-icons"]
+	path = pacman/pkgbuilds/ttf-material-design-icons
+	url = aur://ttf-material-design-icons

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=jGrasp
+Comment=Lightweight development environment written in Java
+Icon=java
+TryExec=/usr/bin/jgrasp
+Exec=/usr/bin/jgrasp
+Categories=Development

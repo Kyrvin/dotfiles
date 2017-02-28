@@ -1,0 +1,57 @@
+# Maintainer: Patrick Keating <kyrvin3@gmail.com>
+
+pkgname=jgrasp
+pkgver=2.0.3_05
+pkgrel=2
+pkgdesc="Lightweight development environment written in Java"
+arch=('i686' 'x86_64')
+license=('custom')
+url="http://jgrasp.org"
+options=('!strip')
+depends=('java-environment=8'
+         'ld-lsb'
+        )
+source=("http://www.jgrasp.org/dl4g/jgrasp/jgrasp${pkgver//./}.zip"
+        'jgrasp.desktop'
+        'LICENSE'
+       )
+sha256sums=('222b6adc198e61c3de07125dc86abbce647d9c778448e5d46ba970432f81d90a'
+            '69740d54c496a9ca61b6b0f26349691b1a81a3b6156575f3e9a647d47a5c489f'
+            '522f9cfdf6a764b50055246ec4ba28e55e32b403426dde844b815475e3c34397'
+           )
+
+build() {
+	cd "$srcdir/$pkgname/src"
+
+	./configure
+	./Make.sh
+}
+
+package() {
+	cd "$srcdir"
+
+	mkdir -p "$pkgdir/usr/bin"
+	mkdir -p "$pkgdir/usr/lib"
+
+	ln -s "/usr/lib/$pkgname/bin/jgrasp" "$pkgdir/usr/bin/$pkgname"
+	install -D -m644 "$srcdir/jgrasp.desktop" "$pkgdir/usr/share/applications/jgrasp.desktop"
+	install -D -m644 "$srcdir/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+
+	# Remove all Windows and OSX components
+	cd "$srcdir/$pkgname"
+	rm -r {src,bin/osx104}
+	rm bin/*.{exe,bat}
+	rm jbin/{*.exe,osx*,windows*}
+
+	# Remove unneeded build artifacts
+	rm {jbin,bin/linux}/*.back
+
+	# Remove unneeded architecture 
+	if [ $CARCH == x86_64 ]; then
+		rm bin/linux/jgrasp jbin/linux_run
+	else
+		rm bin/linux/jgrasp64 jbin/linux_run64
+	fi
+
+	cp -R "$srcdir/$pkgname" "$pkgdir/usr/lib/$pkgname"
+}

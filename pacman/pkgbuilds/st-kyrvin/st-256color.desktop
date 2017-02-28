@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=st-256color
+GenericName=Terminal
+Comment=A simple virtual terminal emulator for X
+TryExec=/usr/bin/st
+Exec=/usr/bin/st
+Icon=utilities-terminal
+Categories=System;TerminalEmulator;
