@@ -28,3 +28,6 @@
 [submodule "pacman/pkgbuilds/ttf-material-design-icons"]
 	path = pacman/pkgbuilds/ttf-material-design-icons
 	url = aur://ttf-material-design-icons
+[submodule "pacman/pkgbuilds/chromium-widevine"]
+	path = pacman/pkgbuilds/chromium-widevine
+	url = aur://chromium-widevine
