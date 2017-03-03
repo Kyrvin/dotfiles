@@ -85,14 +85,6 @@ panel_main() {
 	[ -n "$panel_font_4" ] && lemonbar_opts+=('-f' "$panel_font_4")
 	[ -n "$panel_font_5" ] && lemonbar_opts+=('-f' "$panel_font_5")
 
-	if [ -n "$panel_height" ]; then
-		if [ "$panel_on_bottom" == "true" ]; then
-			bspc config -m primary bottom_padding "$panel_height"
-		else
-			bspc config -m primary top_padding "$panel_height"
-		fi
-	fi
-
 	rm -f "$panel_fifo" && mkfifo "$panel_fifo"
 
 	panel_bspwm   > "$panel_fifo" &
@@ -103,6 +95,27 @@ panel_main() {
 	panel_mpd     > "$panel_fifo" &
 
 	panel_layout < $panel_fifo | lemonbar "${lemonbar_opts[@]}" | sh &
+
+	# Give lemonbar time to startup
+	sleep 1
+
+	# Bspwm automatically adds space for the panel, but does so on all
+	# monitors. For every monitor that is not the primary, set
+	# top_padding to 0.
+	monitors=( $(bspc query -M) )
+	primary=$(bspc query -M -m primary)
+	for m in "${monitors[@]}"; do
+		[ "$primary" == "$m" ] && continue
+
+		if [ "$panel_on_bottom" == "true" ]; then
+			bspc config -m "$m" bottom_padding 0
+		else
+			bspc config -m "$m" top_padding 0
+		fi
+	done
+	unset m
+	unset primary
+	unset monitors
 
 	wait
 }
